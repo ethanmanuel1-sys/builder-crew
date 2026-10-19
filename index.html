@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Builder Crew</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ECEFF2;--surface:#fff;--surface-2:#E2E6EB;--ink:#17202A;--ink-2:#536070;--line:#C9D0D8;--accent:#2C58D6;--accent-ink:#fff;--ok:#1E8A55;--warn:#B7790F;--bad:#C23A2B;
+  --f-display:"Barlow Condensed",system-ui,sans-serif;--f-body:"IBM Plex Sans",system-ui,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --t-network:#3B78DB;--t-dante:#E5B800;--t-power:#C8473A;--t-audio:#7B8794;--t-video:#7B4FD6;--t-lighting:#D64C8B;--t-rf:#2BB3A3}
+@media (prefers-color-scheme:dark){:root{--bg:#11151A;--surface:#191E25;--surface-2:#222932;--ink:#E6EAEE;--ink-2:#9AA5B1;--line:#2D3540;--accent:#7196FF;--accent-ink:#0E1420;--ok:#3BB77A;--warn:#E0A53A;--bad:#EF6A5A}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--f-body);-webkit-text-size-adjust:100%}
+.wrap{max-width:640px;margin:0 auto;padding:12px 16px calc(90px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0 10px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.brand{font:700 13px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+h1{margin:2px 0 6px;font:700 28px/1.05 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.bar{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);transition:width .3s}
+.meta{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--ink-2);margin-top:6px}
+.sync{display:inline-flex;align-items:center;gap:6px}.sync i{width:8px;height:8px;border-radius:50%;background:var(--ok)}.sync.off i{background:var(--warn)}.sync.bad i{background:var(--bad)}
+.tools{display:flex;gap:8px;margin:0 0 12px}
+.tools input{flex:1;min-width:0;font:15px var(--f-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}.seg button{border:0;background:none;color:var(--ink-2);font:600 13px var(--f-body);padding:0 12px;min-height:44px}.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+h2{font:700 18px var(--f-display);text-transform:uppercase;letter-spacing:.04em;margin:18px 0 8px;display:flex;justify-content:space-between;align-items:baseline}
+h2 small{font:500 12px var(--f-mono);color:var(--ink-2);letter-spacing:0}
+ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+li{background:var(--surface);border:1px solid var(--line);border-radius:12px;display:flex;align-items:stretch;overflow:hidden}
+li.now{border:2px solid var(--accent)}
+li.done{opacity:.6}li.done .t{text-decoration:line-through}
+.chk{flex:none;width:64px;border:0;border-right:1px solid var(--line);background:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.chk span{width:30px;height:30px;border-radius:8px;border:2px solid var(--ink-2);display:flex;align-items:center;justify-content:center}
+li.done .chk span{background:var(--ok);border-color:var(--ok)}
+.body{flex:1;min-width:0;padding:11px 12px;border:0;background:none;text-align:left;color:inherit;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:3px}
+.t{font-weight:600}.s{font-size:13px;color:var(--ink-2)}
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}.pill{font:500 11.5px var(--f-mono);padding:2px 7px;border-radius:999px;background:var(--surface-2)}
+.tdot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:1px}
+.who{font-size:12px;color:var(--accent);font-weight:600}
+.empty{text-align:center;color:var(--ink-2);padding:40px 10px}
+.foot{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.foot .in{max-width:640px;margin:0 auto;display:flex;gap:10px;align-items:center}
+.btn{font:600 15px var(--f-body);border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:0 16px;min-height:46px;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);padding:18px;width:min(92vw,420px)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h3{margin:0 0 8px;font:700 22px var(--f-display);text-transform:uppercase}
+dialog input,dialog textarea{width:100%;font:16px var(--f-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);margin:6px 0 12px}
+.row{display:flex;gap:8px;justify-content:flex-end}
+.note{font-size:13px;color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="brand">Builder · crew</div><h1 id="title">Loading…</h1><div class="bar"><i id="bar" style="width:0"></i></div>
+    <div class="meta"><span id="count"></span><span class="sync" id="sync"><i></i><span id="synct">Connecting</span></span></div></header>
+  <div class="tools"><input id="q" type="search" placeholder="Find a cable, label or device" aria-label="Search"><div class="seg" role="group" aria-label="Show"><button data-f="todo" aria-pressed="true">To do</button><button data-f="all" aria-pressed="false">All</button></div></div>
+  <main id="list"><p class="empty">Opening your list…</p></main>
+</div>
+<div class="foot"><div class="in"><span class="note" id="me" style="flex:1"></span><button class="btn" id="fix">Something's wrong</button></div></div>
+<dialog id="dname"><h3>Who's building?</h3><p class="note">Your name shows next to what you tick, so the team knows who made what.</p><input id="nm" autocomplete="name" placeholder="First name"><div class="row"><button class="btn primary" id="nmok">Start</button></div></dialog>
+<dialog id="dfix"><h3>Something's wrong</h3><p class="note">A missing cable, a wrong length, a jack that doesn't exist. The designer sees this right away.</p><textarea id="fx" rows="4"></textarea><div class="row"><button class="btn" id="fxx">Cancel</button><button class="btn primary" id="fxok">Send</button></div></dialog>
+<script>
+"use strict";
+const SUPA_URL="https://ugulsavndngnwxiabnbk.supabase.co",SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVndWxzYXZuZG5nbnd4aWFibmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NDI4MDgsImV4cCI6MjEwODAxODgwOH0.RCUXziON3_Bbj9nhqwDrmXedLxa_1jSxKxLTPb5dhjs";
+const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const AID=(location.hash.replace(/^#/,"").match(/^[a-z0-9]{8,40}$/)||[])[0]||null;
+const TCOL={network:"var(--t-network)",dante:"var(--t-dante)",power:"var(--t-power)",audio:"var(--t-audio)",video:"var(--t-video)",lighting:"var(--t-lighting)",rf:"var(--t-rf)"};
+const S={a:null,filter:"todo",q:"",queue:[],busy:false,online:true,me:""};
+try{S.me=localStorage.getItem("crew.me")||"";S.queue=JSON.parse(localStorage.getItem("crew.q."+AID)||"[]")}catch(e){}
+async function rpc(fn,args){const r=await fetch(SUPA_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{"apikey":SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY,"Content-Type":"application/json"},body:JSON.stringify(args)});if(!r.ok)throw new Error(r.status);const t=await r.text();return t?JSON.parse(t):null}
+function saveQ(){try{localStorage.setItem("crew.q."+AID,JSON.stringify(S.queue))}catch(e){}}
+function setSync(kind,txt){const el=$("#sync");el.className="sync"+(kind==="ok"?"":kind==="off"?" off":" bad");$("#synct").textContent=txt}
+async function load(){if(!AID){$("#title").textContent="No list here";$("#list").innerHTML=`<p class="empty">This link is missing its list. Ask the designer to send it again.</p>`;setSync("bad","No list");return}
+  try{const a=await rpc("crew_get",{aid:AID});if(!a){$("#title").textContent="List not found";$("#list").innerHTML=`<p class="empty">This list was removed or the link is wrong. Ask the designer for a new one.</p>`;setSync("bad","Not found");return}
+    S.a=a;S.online=true;S.queue.forEach(x=>{a.done=a.done||{};if(x.d)a.done[x.k]={at:x.at,by:S.me};else delete a.done[x.k]});render();await flush();setSync(S.queue.length?"off":"ok",S.queue.length?`${S.queue.length} waiting to save`:"Saved · live")}
+  catch(e){S.online=false;setSync("off",S.a?"Offline · ticks are kept on this phone":"Can't reach the server");if(!S.a)$("#list").innerHTML=`<p class="empty">Can't load the list right now. Check your signal; it retries on its own.</p>`}}
+async function flush(){if(S.busy||!S.queue.length)return;S.busy=true;try{while(S.queue.length){const x=S.queue[0];await rpc("crew_tick",{aid:AID,k:x.k,d:x.d,who:S.me||"Builder"});S.queue.shift();saveQ()}setSync("ok","Saved · live")}catch(e){setSync("off",`Offline · ${S.queue.length} tick${S.queue.length>1?"s":""} kept on this phone`)}S.busy=false}
+function tick(k){const a=S.a;if(!a)return;a.done=a.done||{};const d=!a.done[k];if(d)a.done[k]={at:Date.now(),by:S.me};else delete a.done[k];S.queue=S.queue.filter(x=>x.k!==k);S.queue.push({k,d,at:Date.now()});saveQ();render();flush();if(d&&navigator.vibrate)navigator.vibrate(15)}
+async function here(k){if(!S.a)return;S.a.active={who:S.me,item:k,at:Date.now()};render();try{await rpc("crew_here",{aid:AID,k,who:S.me||"Builder"})}catch(e){}}
+function render(){const a=S.a;if(!a)return;$("#title").textContent=a.title||"Your build list";document.title=(a.title||"Build list")+" · Builder Crew";
+  const items=a.items||[],done=items.filter(x=>a.done&&a.done[x.key]).length;$("#bar").style.width=(items.length?done/items.length*100:0)+"%";$("#count").textContent=`${done} of ${items.length} done${a.project_name?" · "+a.project_name:""}`;
+  const q=S.q.toLowerCase(),show=items.filter(x=>(S.filter==="all"||!(a.done&&a.done[x.key]))&&(!q||(x.text+" "+(x.sub||"")+" "+(x.sec||"")).toLowerCase().includes(q)));
+  if(!show.length){$("#list").innerHTML=`<p class="empty">${items.length&&done===items.length?"Everything on this list is done. Thank you!":q?"Nothing matches that.":"Nothing left to do here."}</p>`;return}
+  const by={};show.forEach(x=>(by[x.sec||"Build"]=by[x.sec||"Build"]||[]).push(x));
+  $("#list").innerHTML=Object.entries(by).map(([sec,xs])=>`<h2>${esc(sec)}<small>${xs.filter(x=>a.done&&a.done[x.key]).length}/${xs.length}</small></h2><ul>${xs.map(x=>{const dn=a.done&&a.done[x.key],now=a.active&&a.active.item===x.key&&Date.now()-(a.active.at||0)<15*60e3;
+    return `<li class="${dn?"done":""}${now?" now":""}"><button class="chk" data-k="${esc(x.key)}" aria-label="${dn?"Mark not done":"Mark done"}: ${esc(x.text)}"><span>${dn?`<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10" fill="none" stroke="#fff" stroke-width="3"/></svg>`:""}</span></button>
+    <button class="body" data-here="${esc(x.key)}"><span class="t">${x.type?`<i class="tdot" style="background:${TCOL[x.type]||"var(--ink-2)"}"></i>`:""}${esc(x.text)}</span>${x.sub?`<span class="s">${esc(x.sub)}</span>`:""}${x.bulk||x.ends?`<span class="pills">${x.bulk?`<span class="pill">${esc(x.bulk)}</span>`:""}${x.ends?`<span class="pill">${esc(x.ends)}</span>`:""}</span>`:""}${dn&&dn.by?`<span class="who">Done by ${esc(dn.by)}</span>`:now&&a.active.who?`<span class="who">${esc(a.active.who)} is on this</span>`:""}</button></li>`}).join("")}</ul>`).join("")}
+document.addEventListener("click",e=>{const c=e.target.closest(".chk");if(c){tick(c.dataset.k);return}const h=e.target.closest("[data-here]");if(h){here(h.dataset.here);return}
+  const f=e.target.closest("[data-f]");if(f){S.filter=f.dataset.f;document.querySelectorAll("[data-f]").forEach(b=>b.setAttribute("aria-pressed",String(b===f)));render()}});
+$("#q").addEventListener("input",e=>{S.q=e.target.value;render()});
+function askName(){$("#nm").value=S.me;$("#dname").showModal();setTimeout(()=>$("#nm").focus(),50)}
+$("#nmok").addEventListener("click",()=>{S.me=$("#nm").value.trim().slice(0,40)||"Builder";try{localStorage.setItem("crew.me",S.me)}catch(e){}$("#dname").close();showMe()});
+$("#nm").addEventListener("keydown",e=>{if(e.key==="Enter")$("#nmok").click()});
+function showMe(){$("#me").innerHTML=`Building as <b>${esc(S.me||"…")}</b> · <button class="btn" style="min-height:32px;padding:0 10px;font-size:13px" id="chg">Change</button>`;$("#chg").onclick=askName}
+$("#fix").addEventListener("click",()=>{$("#fx").value="";$("#dfix").showModal()});$("#fxx").addEventListener("click",()=>$("#dfix").close());
+$("#fxok").addEventListener("click",async()=>{const t=$("#fx").value.trim();if(!t){$("#dfix").close();return}try{await rpc("crew_note",{aid:AID,txt:t.slice(0,600),who:S.me||"Builder"});$("#dfix").close();setSync("ok","Sent to the designer")}catch(e){alert("Couldn't send it. Check your signal and try again.")}});
+showMe();if(!S.me)askName();load();setInterval(load,8000);window.addEventListener("online",()=>{load()});document.addEventListener("visibilitychange",()=>{if(!document.hidden)load()});
+</script>
+</body>
+</html>
