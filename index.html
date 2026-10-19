@@ -74,7 +74,7 @@ function saveQ(){try{localStorage.setItem("crew.q."+AID,JSON.stringify(S.queue))
 function setSync(kind,txt){const el=$("#sync");el.className="sync"+(kind==="ok"?"":kind==="off"?" off":" bad");$("#synct").textContent=txt}
 async function load(){if(!AID){$("#title").textContent="No list here";$("#list").innerHTML=`<p class="empty">This link is missing its list. Ask the designer to send it again.</p>`;setSync("bad","No list");return}
   try{const a=await rpc("crew_get",{aid:AID});if(!a){$("#title").textContent="List not found";$("#list").innerHTML=`<p class="empty">This list was removed or the link is wrong. Ask the designer for a new one.</p>`;setSync("bad","Not found");return}
-    S.a=a;S.online=true;S.queue.forEach(x=>{a.done=a.done||{};if(x.d)a.done[x.k]={at:x.at,by:S.me};else delete a.done[x.k]});render();await flush();setSync(S.queue.length?"off":"ok",S.queue.length?`${S.queue.length} waiting to save`:"Saved · live")}
+    if(!S.a&&!S.me)askName();S.a=a;S.online=true;S.queue.forEach(x=>{a.done=a.done||{};if(x.d)a.done[x.k]={at:x.at,by:S.me};else delete a.done[x.k]});render();await flush();setSync(S.queue.length?"off":"ok",S.queue.length?`${S.queue.length} waiting to save`:"Saved · live")}
   catch(e){S.online=false;setSync("off",S.a?"Offline · ticks are kept on this phone":"Can't reach the server");if(!S.a)$("#list").innerHTML=`<p class="empty">Can't load the list right now. Check your signal; it retries on its own.</p>`}}
 async function flush(){if(S.busy||!S.queue.length)return;S.busy=true;try{while(S.queue.length){const x=S.queue[0];await rpc("crew_tick",{aid:AID,k:x.k,d:x.d,who:S.me||"Builder"});S.queue.shift();saveQ()}setSync("ok","Saved · live")}catch(e){setSync("off",`Offline · ${S.queue.length} tick${S.queue.length>1?"s":""} kept on this phone`)}S.busy=false}
 function tick(k){const a=S.a;if(!a)return;a.done=a.done||{};const d=!a.done[k];if(d)a.done[k]={at:Date.now(),by:S.me};else delete a.done[k];S.queue=S.queue.filter(x=>x.k!==k);S.queue.push({k,d,at:Date.now()});saveQ();render();flush();if(d&&navigator.vibrate)navigator.vibrate(15)}
@@ -96,7 +96,7 @@ $("#nm").addEventListener("keydown",e=>{if(e.key==="Enter")$("#nmok").click()});
 function showMe(){$("#me").innerHTML=`Building as <b>${esc(S.me||"…")}</b> · <button class="btn" style="min-height:32px;padding:0 10px;font-size:13px" id="chg">Change</button>`;$("#chg").onclick=askName}
 $("#fix").addEventListener("click",()=>{$("#fx").value="";$("#dfix").showModal()});$("#fxx").addEventListener("click",()=>$("#dfix").close());
 $("#fxok").addEventListener("click",async()=>{const t=$("#fx").value.trim();if(!t){$("#dfix").close();return}try{await rpc("crew_note",{aid:AID,txt:t.slice(0,600),who:S.me||"Builder"});$("#dfix").close();setSync("ok","Sent to the designer")}catch(e){alert("Couldn't send it. Check your signal and try again.")}});
-showMe();if(!S.me)askName();load();setInterval(load,8000);window.addEventListener("online",()=>{load()});document.addEventListener("visibilitychange",()=>{if(!document.hidden)load()});
+showMe();load();setInterval(load,8000);window.addEventListener("online",()=>{load()});document.addEventListener("visibilitychange",()=>{if(!document.hidden)load()});
 </script>
 </body>
 </html>
